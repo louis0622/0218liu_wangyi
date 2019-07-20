@@ -64,10 +64,11 @@ export default {
 #footer_guide
   border-top 1px solid #C1C1C1
   background #fff
-  position absolute
+  position fixed
   bottom 0
   width 100%
   height 100px
+  z-index 999
   .mint-tabbar
     background #FFFFFF
     height 96px
