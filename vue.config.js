@@ -14,5 +14,14 @@ module.exports = {
       postCompile: true,
       theme: true
     }
-  }
+  },
+  configureWebpack: config => {
+    require('vux-loader').merge(config, {
+      options: {},
+      plugins: ['vux-ui', 'progress-bar', {
+        name: 'less-theme',
+        path: 'src/style/vux_theme.less'
+      }]
+    })
+  },
 }

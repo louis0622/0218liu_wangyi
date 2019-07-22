@@ -1,26 +1,28 @@
 <template>
   <div id="homeContainer">
     <header class="homeHeader">
-      <div class="homeUpper">
-        <a href="javascript:" class="logo">
+      <HeaderTop>
+        <a href="javascript:" class="logo" slot="content">
           <img src="./images/logo.png" alt="网易严选" />
         </a>
-        <div class="homeInput">
+        <div class="homeInput" slot="content">
           <i class="iconfont icon-sousuo"></i>
           <input
             type="text"
             class="homeSearch"
-            style="padding-left:10px;"
+            style="padding-left:20px;"
             placeholder="搜索商品, 共21716款好物"
-            onfocus="this.placeholder=' '"
+            onfocus="this.placeholder=''"
             onblur="this.placeholder='搜索商品, 共21716款好物'"
           />
         </div>
-        <button class="homeLogin">登录</button>
-      </div>
+        <button class="homeLogin" slot="content">登录</button>
+      </HeaderTop>
       <div class="homeLower">
         <cube-scroll-nav-bar :current="current" :labels="labels" @change="changeHandler" />
-        <a href="##" class="hBimg"><i class="iconfont icon-xiangyou"></i></a>
+        <a href="##" class="hBimg">
+          <i class="iconfont icon-arrow-right21"></i>
+        </a>
       </div>
     </header>
     <section class="homeSwiper">
@@ -244,27 +246,64 @@
           </a>
         </div>
         <div class="shop-Scoll-item">
-          <div class="horizontal-container">
-            <div class="scroll-wrapper" ref="scroll">
-              <div class="scroll-content">
-                <div class="scroll-item" v-for="(item, index) in emojis" :key="index">
-                  {{item}}
-                  <ul>
-                    <li class="scroll-items" ref="scroll_1">
-                      <div>
-                        <img src="./images/betterScoll01.png" />
-                      </div>
-                      <span class="span_1">男式精梳棉圆领短袖T恤衫</span>
-                      <span class="span_2">
-                        ¥188
-                        <span class="span_2-1">¥52</span>
-                      </span>
-                      <span class="span_3">特价</span>
-                    </li>
-                  </ul>
+          <div class="scroll-wrapper" ref="scroll">
+            <ul class="scroll-list" ref="scroll_1">
+              <li class="scroll-items" >
+                <div>
+                  <img src="./images/betterScoll01.png" />
                 </div>
-              </div>
-            </div>
+                <span class="span_1">男式精梳棉圆领短袖T恤衫</span>
+                <span class="span_2">
+                  ¥188
+                  <span class="span_2-1">¥52</span>
+                </span>
+                <span class="span_3">特价</span>
+              </li>
+              <li class="scroll-items" >
+                <div>
+                  <img src="./images/betterScoll01.png" />
+                </div>
+                <span class="span_1">男式精梳棉圆领短袖T恤衫</span>
+                <span class="span_2">
+                  ¥188
+                  <span class="span_2-1">¥52</span>
+                </span>
+                <span class="span_3">特价</span>
+              </li>
+              <li class="scroll-items" >
+                <div>
+                  <img src="./images/betterScoll01.png" />
+                </div>
+                <span class="span_1">男式精梳棉圆领短袖T恤衫</span>
+                <span class="span_2">
+                  ¥188
+                  <span class="span_2-1">¥52</span>
+                </span>
+                <span class="span_3">特价</span>
+              </li>
+              <li class="scroll-items" >
+                <div>
+                  <img src="./images/betterScoll01.png" />
+                </div>
+                <span class="span_1">男式精梳棉圆领短袖T恤衫</span>
+                <span class="span_2">
+                  ¥188
+                  <span class="span_2-1">¥52</span>
+                </span>
+                <span class="span_3">特价</span>
+              </li>
+              <li class="scroll-items" >
+                <div>
+                  <img src="./images/betterScoll01.png" />
+                </div>
+                <span class="span_1">男式精梳棉圆领短袖T恤衫</span>
+                <span class="span_2">
+                  ¥188
+                  <span class="span_2-1">¥52</span>
+                </span>
+                <span class="span_3">特价</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -278,10 +317,17 @@
         </p>
       </div>
     </div>
+    <div class="Homegift" v-show="goTopShow" @click="goTop">
+      <i class="iconfont icon-xiaojiantoushang"></i>
+    </div>
+    <div class="Homegift2">
+      <i class="iconfont icon-liwu"></i>
+    </div>
   </div>
 </template>
-
 <script type="text/ecmascript-6">
+import Footer from "../../components/Footer/Footer";
+import HeaderTop from "../../components/HeaderTop/HeaderTop";
 import Swiper from "swiper";
 import "swiper/dist/css/swiper.min.css";
 import BScroll from "@better-scroll/core";
@@ -289,6 +335,8 @@ export default {
   data() {
     name: "Home";
     return {
+      scrollTop: "",
+      goTopShow: false,
       //Navbar区域
       current: "快车",
       labels: [
@@ -301,44 +349,48 @@ export default {
         "运动旅行",
         "数码家电",
         "全球特色"
-      ],
-      //betterScoll区域
-      emojis: [
-        "8色可选",
-        "9色可选",
-        "10色可选",
-        "5色可选",
-        "2色可选",
-        "10色可选",
-        "5色可选",
-        "2色可选"
       ]
     };
   },
-  //betterScoll自定义函数
-  beforeDestroy() {
-    this.bs.destroy();
-  },
   methods: {
+    //返回顶部
+    handleScroll() {
+      this.scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+      if (this.scrollTop > 500) {
+        this.goTopShow = true;
+      } else {
+        this.goTopShow = false;
+      }
+    },
+    goTop() {
+      let timer = null,
+        _that = this;
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        if (_that.scrollTop > 0) {
+          _that.scrollTop -= 50;
+          document.body.scrollTop = document.documentElement.scrollTop =
+            _that.scrollTop;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+          _that.goTopShow = false;
+        }
+      });
+    },
+    //navbar轮播
     changeHandler(cur) {
       this.current = cur;
-    },
-    init() {
-      this.bs = new BScroll(this.$refs.scroll, {
-        scrollX: true,
-        probeType: 3 // listening scroll hook
-      });
-      this._registerHooks(["scroll", "scrollEnd"], pos => {
-        console.log("done");
-      });
-    },
-    _registerHooks(hookNames, handler) {
-      hookNames.forEach(name => {
-        this.bs.on(name, handler);
-      });
     }
+
+    //guolun
   },
   mounted() {
+    //返回顶部
+    window.addEventListener("scroll", this.handleScroll);
     //轮播图区域
     let mySwiper = new Swiper(".swiper-container", {
       //direction: 'vertical', // 垂直切换选项
@@ -351,11 +403,18 @@ export default {
     });
     //betterScoll区域
     this.init();
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
+  },
+  components: {
+    HeaderTop
   }
 };
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
 #homeContainer
+  position relative
   width 100%
   height 100%
   background #fff
@@ -366,48 +425,6 @@ export default {
     position fixed
     top 0
     background #fff
-    .homeUpper
-      width 100%
-      height 88px
-      display flex
-      align-items center
-      .logo
-        img
-          display block
-          width 150px
-          margin 0 15px
-      .homeInput
-        position relative
-        line-height 20px
-        .homeSearch
-          width 420px
-          height 55px
-          border-radius 10px
-          background #EDEDED
-          font-size 28px
-          line-height 28px
-        input::-webkit-input-placeholder
-          text-indent 70px
-          color #666
-          font-size 28px
-        .iconfont
-          position absolute
-          left 45px
-          top 50%
-          margin-right 20px
-          margin-top -8px
-          color #666
-      .homeLogin
-        width 80px
-        height 45px
-        border 2px solid #b4282d
-        border-radius 8px
-        text-align center
-        line-height 43px
-        margin-left 15px
-        font-size 13px
-        color #B4282D
-        background #fff
     .homeLower
       display flex
       justify-content space-between
@@ -419,6 +436,9 @@ export default {
         display inline-block
         text-align center
         line-height 60px
+        .iconfont
+          font-size 45px
+          margin-right 35px
       .cube-scroll-nav-bar_horizontal
         padding-left 30px
         height 56px
@@ -435,7 +455,7 @@ export default {
                   vertical-align middle
                   box-sizing border-box
                   padding 0 15px
-                  &:nth-child(1)
+                  &:nth-child(1)0
                     margin-left 0
                   span
                     line-height 56px
@@ -471,9 +491,7 @@ export default {
       height 72px
       box-sizing border-box
       display flex
-      flex-flow row nowrap
-      -webkit-box-align center
-      align-items center
+      line-height 72px
       padding 0 30px
       li
         width 220px
@@ -744,49 +762,52 @@ export default {
       .shop-Scoll-item
         width 100%
         height 400px
-        .horizontal-container
-          .scroll-wrapper
-            width 100%
-            height 400px
-            margin 20px auto
-            white-space nowrap
-            overflow hidden
-            .scroll-content
+        .scroll-wrapper
+          width 100%
+          height 400px
+          margin 20px auto
+          white-space nowrap
+          overflow hidden
+          .scroll-list
+            height 50px
+            line-height 50px
+            font-size 24px
+            display inline-block
+            text-align center
+            padding 0 10px
+            .scroll-items
+              display flex
+              flex-direction column
+              line-height 40px
+              width 200px
+              height 330px
+              margin-left 20px
               display inline-block
-            .scroll-item
-              height 50px
-              line-height 50px
-              font-size 24px
-              display inline-block
-              text-align center
-              padding 0 10px
-              .scroll-items
-                display flex
-                flex-direction column
-                line-height 40px
-                width 200px
-                height 330px
-                margin-left 20px
-                div
-                  background #F4F4F4
-                  img
-                    width 200px
-                    height 180px
-                span
-                  text-align left
-                .span_1
-                  font-size 24px
-                  white-space normal
-                  margin-top 15px
-                .span_2
-                  font-size 24px
-                  color #B4282D
-                  .span_2-1
-                    margin-left 10px
-                    text-decoration line-through
-                    color #8B8585
-                .span_3
-                  font-size 24px
+              div
+                background #F4F4F4
+                img
+                  width 200px
+                  height 180px
+              span
+                text-align left
+              .span_1
+                font-size 24px
+                white-space normal
+                margin-top 15px
+              .span_2
+                font-size 24px
+                color #B4282D
+                .span_2-1
+                  margin-left 10px
+                  text-decoration line-through
+                  color #8B8585
+              .span_3
+                font-size 24px
+                width 70px
+                height 35px
+                border 2px solid #B4282D
+                text-align center
+                border-radius 15px
     .homeFooter
       position relative
       width 100%
@@ -822,4 +843,30 @@ export default {
         font-size 25px
         text-align center
         color #999
+  .Homegift
+    position fixed
+    bottom 130px
+    right 28px
+    width 82px
+    height 82px
+    background #fff
+    border-radius 50%
+    text-align center
+    line-height 75px
+    .iconfont
+      font-size 45px
+      color #C1C1C1
+  .Homegift2
+    position fixed
+    bottom 250px
+    right 0px
+    width 112px
+    height 80px
+    background #fff
+    border-radius 50px 0 0 50px
+    text-align center
+    line-height 80px
+    .iconfont
+      font-size 50px
+      color #B4282D
 </style>

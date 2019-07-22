@@ -6,13 +6,10 @@ import 'amfe-flexible'
 //消除一些警告
 Vue.config.productionTip = false
 
-
-//引入mint-ui
-import { Tabbar, TabItem} from 'mint-ui';
-//全局注册mint-ui组件
-Vue.component(Tabbar.name, Tabbar);
-Vue.component(TabItem.name, TabItem);
-
+//VuX Ui库
+import{ Tabbar, TabbarItem } from 'vux'
+Vue.component('tabbar', Tabbar)
+Vue.component('tabbar-item', TabbarItem)
 
 //引入路由
 import router from './router'
